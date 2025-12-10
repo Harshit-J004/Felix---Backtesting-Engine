@@ -15,7 +15,6 @@ namespace felix {
         // Returns a list of fills generated
         std::vector<Fill> check_fills(double market_price);
 
-        // Debug helper
         size_t active_orders_count() const { return orders_.size(); }
 
     private:
