@@ -1,4 +1,3 @@
-# Strategy Parameters
 strategy:
   name: "MyStrategy"
   lookback_period: 20
