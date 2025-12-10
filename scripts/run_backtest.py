@@ -19,18 +19,21 @@ from felix.analytics.metrics import BacktestResults
 class SampleStrategy(Strategy):
     """
     Sample Moving Average Crossover Strategy.
-    Demonstrates: on_start, on_tick, on_end callbacks.
+    Demonstrates: on_start, on_tick, on_fill, on_bar, on_end callbacks with risk checks.
     """
     
-    def __init__(self, engine: fe.MatchingEngine, portfolio: fe.Portfolio):
+    def __init__(self, engine: fe.MatchingEngine, portfolio: fe.Portfolio, risk_engine: fe.RiskEngine):
         self.engine = engine
         self.portfolio = portfolio
+        self.risk_engine = risk_engine
         self.prices = []
         self.equity_curve = []
         self.trades = []
         self.position = 0
         self.entry_price = 0.0
         self.initial_cash = portfolio.cash()
+        self.peak_equity = portfolio.cash()
+        self.risk_halted = False
         
     def on_start(self):
         print("Backtest started.")
@@ -59,10 +62,20 @@ class SampleStrategy(Strategy):
         
         # Buy signal: short MA crosses above long MA
         if short_ma > long_ma and self.position == 0:
+            # Risk check: Is strategy halted?
+            if self.risk_halted:
+                return
+            
+            # Risk check: Drawdown limit
+            if not self.risk_engine.check_drawdown(self.portfolio, self.peak_equity):
+                print(f"  [RISK] Halted - Max drawdown exceeded!")
+                self.risk_halted = True
+                return
+            
             shares = 100
             self.position = shares
             self.entry_price = tick.price
-            cost = tick.price * shares
+            print(f"  [TRADE] BUY {shares} shares @ ${tick.price:.2f}")
             
             # Log trade with readable date
             self.trades.append({
@@ -75,8 +88,8 @@ class SampleStrategy(Strategy):
             
         # Sell signal: short MA crosses below long MA  
         elif short_ma < long_ma and self.position > 0:
-            proceeds = tick.price * self.position
             pnl = (tick.price - self.entry_price) * self.position
+            print(f"  [TRADE] SELL {self.position} shares @ ${tick.price:.2f} → P&L: ${pnl:+.2f}")
             
             self.trades.append({
                 'datetime': datetime.fromtimestamp(tick.timestamp / 1e9).strftime('%Y-%m-%d %H:%M'),
@@ -135,8 +148,16 @@ def main():
     engine = fe.MatchingEngine(slippage)
     portfolio = fe.Portfolio(100000.0)
     
-    # Create strategy
-    strategy = SampleStrategy(engine, portfolio)
+    # Configure risk limits (20% max drawdown)
+    risk_limits = fe.RiskLimits()
+    risk_limits.max_drawdown = 0.20  # 20%
+    risk_limits.max_position_size = 1000
+    risk_limits.max_order_size = 500
+    risk_engine = fe.RiskEngine(risk_limits)
+    print(f"Risk limits: max_drawdown={risk_limits.max_drawdown*100}%, max_position={risk_limits.max_position_size}")
+    
+    # Create strategy with risk engine
+    strategy = SampleStrategy(engine, portfolio, risk_engine)
     
     # Run backtest
     strategy.on_start()
