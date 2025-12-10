@@ -6,7 +6,7 @@
 
 namespace felix {
 
-    class StrategyHandle; // We'll need a way to call into Python/Strategy
+    class StrategyHandle; // We will need a way to call into Python/Strategy
 
     class EventLoop {
     public:
