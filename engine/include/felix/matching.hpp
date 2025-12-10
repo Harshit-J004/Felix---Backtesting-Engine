@@ -10,7 +10,7 @@
 
 namespace felix {
 
-    // Slippage & Latency configuration per assignment spec §8
+    // Slippage & Latency configuration per our assignment spec §8
     struct SlippageConfig {
         double fixed_bps = 5.0;          // Fixed slippage in basis points (0.05%)
         double latency_us = 100.0;       // Order activation latency in microseconds
