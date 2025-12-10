@@ -6,11 +6,8 @@
 #include <cassert>
 #include <filesystem>
 
-// Simple test runner
 int main() {
     std::string filename = "test_data.bin";
-    
-    // 1. Generate Data
     {
         std::ofstream out(filename, std::ios::binary);
         std::vector<felix::TickRecord> ticks(10);
@@ -20,12 +17,10 @@ int main() {
             ticks[i].price = 100.0 + i;
             ticks[i].volume = 1.0;
             ticks[i].flags = (i % 2); 
-            // _pad is uninitialized, doesn't matter for this test
         }
         out.write(reinterpret_cast<const char*>(ticks.data()), ticks.size() * sizeof(felix::TickRecord));
     }
 
-    // 2. Test DataStream
     felix::DataStream stream;
     stream.load(filename);
 
