@@ -16,7 +16,7 @@ def convert_to_binary(df, symbol_id, output_file):
     print(f"Converting {len(df)} records to binary {output_file}...")
     
     with open(output_file, "wb") as f:
-        # TickRecord Struct Layout:
+        # TickRecord Struct Layout Like:
         # timestamp (uint64), symbol_id (uint64), price (double), volume (double), flags (uint8), pad (7 bytes)
         # Format string: <QQddB7x
         
@@ -50,7 +50,7 @@ def main():
     
     args = parser.parse_args()
     
-    # Ensure output dir exists
+    # It ensure output dir exists
     os.makedirs(os.path.dirname(args.output), exist_ok=True)
     
     df = download_data(args.symbol, args.start, args.end)
