@@ -62,7 +62,7 @@ class SampleStrategy(Strategy):
         
         # Buy signal: short MA crosses above long MA
         if short_ma > long_ma and self.position == 0:
-            # Risk check: Is strategy halted?
+            # Risk check:- Is strategy halted?
             if self.risk_halted:
                 return
             
@@ -86,7 +86,7 @@ class SampleStrategy(Strategy):
                 'pnl': 0.0,
             })
             
-        # Sell signal: short MA crosses below long MA  
+        # Sell signal:- short MA crosses below long MA  
         elif short_ma < long_ma and self.position > 0:
             pnl = (tick.price - self.entry_price) * self.position
             print(f"  [TRADE] SELL {self.position} shares @ ${tick.price:.2f} → P&L: ${pnl:+.2f}")
