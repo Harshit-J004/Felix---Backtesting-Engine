@@ -45,7 +45,10 @@ target_link_libraries(felix_engine PRIVATE pybind11::module)
 
 # Testing
 enable_testing()
-add_executable(test_datastream tests/cpp/test_datastream.cpp engine/src/core/datastream.cpp)
+add_executable(test_datastream tests/cpp/test_datastream.cpp ${ENGINE_SOURCES})
 target_include_directories(test_datastream PRIVATE engine/include)
-# If we used mmap or other libs, link them here.
+
+add_executable(test_matching tests/cpp/test_matching.cpp ${ENGINE_SOURCES})
+target_include_directories(test_matching PRIVATE engine/include)
+
 

@@ -1,8 +1,12 @@
 # Build directories
 build/
+Release/
 dist/
 *.egg-info/
 __pycache__/
+
+# Results (generated output)
+results/
 
 # Compiled binaries
 *.pyd

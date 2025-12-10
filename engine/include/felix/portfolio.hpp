@@ -1,23 +1,39 @@
 #pragma once
 
-#include <string>
-#include <unordered_map>
+#include "execution.hpp"
+#include <map>
+#include <cstdint>
 
 namespace felix {
 
+    struct Position {
+        double quantity;     // Positive = Long, Negative = Short
+        double avg_price;
+        double realized_pnl;
+    };
+
     class Portfolio {
     public:
-        Portfolio();
+        Portfolio(double initial_cash = 100000.0);
+
+        // Process a fill and update positions
+        void on_fill(const Fill& fill);
+
+        // Getters
+        double cash() const { return cash_; }
+        double equity() const;  // Cash + Unrealized P&L
+        double unrealized_pnl(uint64_t symbol_id, double current_price) const;
+        double total_unrealized_pnl(double current_price) const; // Simplified: assumes one symbol
         
-        void deposit(double amount);
-        double get_cash() const;
-        double get_position(const std::string& symbol) const;
+        const Position& get_position(uint64_t symbol_id) const;
         
-        void update_position(const std::string& symbol, double quantity, double price);
+        // Mark-to-market update
+        void update_prices(uint64_t symbol_id, double price);
 
     private:
-        double cash_ = 0.0;
-        std::unordered_map<std::string, double> positions_;
+        double cash_;
+        std::map<uint64_t, Position> positions_;
+        std::map<uint64_t, double> last_prices_;
     };
 
 }
