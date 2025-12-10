@@ -95,4 +95,4 @@ class MyStrategy(Strategy):
 
 ## License
 
-MIT
+By MIT
