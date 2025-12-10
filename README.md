@@ -34,6 +34,13 @@ python scripts/run_backtest.py
 ## Output
 
 ```
+Risk limits: max_drawdown=20.0%, max_position=1000.0
+Backtest started.
+  [TRADE] BUY 100 shares @ $228.83
+  [TRADE] SELL 100 shares @ $226.98 → P&L: $-184.17
+  [TRADE] BUY 100 shares @ $232.17
+  ...
+
 ==================================================
 BACKTEST RESULTS
 ==================================================
