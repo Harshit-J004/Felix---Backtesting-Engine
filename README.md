@@ -80,7 +80,7 @@ class MyStrategy(Strategy):
         print("Backtest started")
     
     def on_tick(self, tick):
-        # Your trading logic here
+        # WE can add trading logic here
         pass
     
     def on_bar(self, bar):
